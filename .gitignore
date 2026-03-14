@@ -1,0 +1,4 @@
+backend/drishti.db
+backend/test_drishti.db
+backend/**/__pycache__/
+backend/**/*.pyc
