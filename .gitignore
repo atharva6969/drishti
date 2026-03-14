@@ -1,13 +1,26 @@
-backend/drishti.db
-backend/test_drishti.db
-backend/**/__pycache__/
-backend/**/*.pyc
-backend/.pytest_cache/
-backend/uploads/
-frontend/node_modules/
-frontend/build/
-*.env
-.env
+
+# Python build artifacts
 __pycache__/
+**/__pycache__/
 *.pyc
 *.pyo
+*.pyd
+.pytest_cache/
+**/.pytest_cache/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Environment files
+.env
+*.env
+
+# Backend uploads
+backend/uploads/
+
+# Frontend
+frontend/node_modules/
+frontend/build/
+
