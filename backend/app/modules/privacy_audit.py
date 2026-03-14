@@ -12,7 +12,7 @@ from datetime import datetime, timedelta
 
 logger = logging.getLogger(__name__)
 
-LAW_ENFORCEMENT_RETENTION_DAYS = 2555  # 7 years, per DPDP Act 2023 law enforcement requirement
+LAW_ENFORCEMENT_RETENTION_DAYS = 2557  # 7 years (7 × 365.25 ≈ 2557 days), per DPDP Act 2023
 
 
 class PrivacyAuditLogger:

@@ -36,6 +36,7 @@ function NGODashboard() {
     }
   };
 
+  // Approximate distribution among top 5 high-risk states (remaining ~12% spread across other states)
   const highRiskStates = [
     { state: 'West Bengal', cases: stats.active > 0 ? Math.floor(stats.active * 0.3) : 0, risk: 'high' },
     { state: 'Bihar', cases: stats.active > 0 ? Math.floor(stats.active * 0.25) : 0, risk: 'high' },
