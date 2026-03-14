@@ -69,7 +69,7 @@ def compute_gait_confidence(
 ) -> SignalResult:
     """Compare gait sequences (silhouette frame lists).
 
-    Uses OpenGait model in production.  94 % accuracy at 10 m distance.
+    Uses OpenGait model in production.  94% accuracy at 10m distance.
     """
     if not probe_sequence or not gallery_sequence:
         return SignalResult("gait", 0.0, available=False, details="sequence unavailable")
