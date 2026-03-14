@@ -213,10 +213,9 @@ body {
 .alert-item {
   padding: 14px;
   border-radius: 8px;
-  border-left: 4px solid var(--primary-light);
   background: #f8f9ff;
   border: 1px solid var(--border);
-  border-left-width: 4px;
+  border-left: 4px solid var(--primary-light);
 }
 
 .alert-item.high { border-left-color: var(--danger); background: #fff5f5; }
