@@ -8,6 +8,7 @@ back into the intelligence pipeline.
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Optional
@@ -43,6 +44,16 @@ class CommunityNetwork:
     def register_reporter(self, reporter: CommunityReporter) -> None:
         self._reporters.append(reporter)
 
+    @staticmethod
+    def _haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
+        """Return the great-circle distance in km between two coordinates."""
+        r = 6371.0  # Earth radius in km
+        phi1, phi2 = math.radians(lat1), math.radians(lat2)
+        dphi = math.radians(lat2 - lat1)
+        dlambda = math.radians(lon2 - lon1)
+        a = math.sin(dphi / 2) ** 2 + math.cos(phi1) * math.cos(phi2) * math.sin(dlambda / 2) ** 2
+        return 2 * r * math.asin(math.sqrt(a))
+
     def get_reporters_in_radius(
         self,
         latitude: float,
@@ -51,17 +62,13 @@ class CommunityNetwork:
     ) -> list[CommunityReporter]:
         """Return active reporters within *radius_km* of a point.
 
-        Uses a simplified Euclidean approximation (1 deg ≈ 111 km).
-        A production system would use Haversine or PostGIS.
+        Uses the Haversine formula for accurate great-circle distance.
         """
-        km_per_deg = 111.0
         results: list[CommunityReporter] = []
         for r in self._reporters:
             if not r.active:
                 continue
-            dlat = abs(r.latitude - latitude) * km_per_deg
-            dlon = abs(r.longitude - longitude) * km_per_deg
-            dist = (dlat**2 + dlon**2) ** 0.5
+            dist = self._haversine_km(latitude, longitude, r.latitude, r.longitude)
             if dist <= radius_km:
                 results.append(r)
         return results[: settings.COMMUNITY_ALERT_MAX_RECIPIENTS]
