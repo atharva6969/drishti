@@ -1,0 +1,1 @@
+"""Clothing detection ML module."""

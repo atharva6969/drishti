@@ -1,0 +1,69 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: drishti-backend
+  namespace: drishti
+  labels:
+    app: drishti
+    component: backend
+spec:
+  selector:
+    app: drishti
+    component: backend
+  ports:
+    - name: http
+      port: 8000
+      targetPort: 8000
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: drishti-frontend
+  namespace: drishti
+  labels:
+    app: drishti
+    component: frontend
+spec:
+  selector:
+    app: drishti
+    component: frontend
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+  type: ClusterIP
+---
+# Ingress — HTTPS termination
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: drishti-ingress
+  namespace: drishti
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  tls:
+    - hosts:
+        - drishti.police.gov.in
+      secretName: drishti-tls
+  rules:
+    - host: drishti.police.gov.in
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: drishti-backend
+                port:
+                  number: 8000
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: drishti-frontend
+                port:
+                  number: 80

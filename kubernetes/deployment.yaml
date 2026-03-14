@@ -1,0 +1,146 @@
+---
+# DRISHTI Backend Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: drishti-backend
+  namespace: drishti
+  labels:
+    app: drishti
+    component: backend
+    version: "1.0.0"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: drishti
+      component: backend
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: drishti
+        component: backend
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+      containers:
+        - name: backend
+          image: drishti/backend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+              name: http
+          envFrom:
+            - configMapRef:
+                name: drishti-config
+            - secretRef:
+                name: drishti-secrets
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "512Mi"
+            limits:
+              cpu: "2000m"
+              memory: "2Gi"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          volumeMounts:
+            - name: evidence-storage
+              mountPath: /app/evidence
+      volumes:
+        - name: evidence-storage
+          persistentVolumeClaim:
+            claimName: evidence-pvc
+---
+# DRISHTI Frontend Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: drishti-frontend
+  namespace: drishti
+  labels:
+    app: drishti
+    component: frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: drishti
+      component: frontend
+  template:
+    metadata:
+      labels:
+        app: drishti
+        component: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: drishti/frontend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+---
+# Celery Worker Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: drishti-worker
+  namespace: drishti
+  labels:
+    app: drishti
+    component: worker
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: drishti
+      component: worker
+  template:
+    metadata:
+      labels:
+        app: drishti
+        component: worker
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+        - name: worker
+          image: drishti/backend:latest
+          command: ["celery", "-A", "app.core.celery_app", "worker", "--loglevel=info"]
+          envFrom:
+            - configMapRef:
+                name: drishti-config
+            - secretRef:
+                name: drishti-secrets
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "1Gi"
+            limits:
+              cpu: "2000m"
+              memory: "4Gi"

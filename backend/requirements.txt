@@ -1,0 +1,52 @@
+# ===========================================================
+# DRISHTI Backend Dependencies
+# ===========================================================
+
+# --- Web framework ---
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+python-multipart==0.0.20
+
+# --- Database ---
+sqlalchemy[asyncio]==2.0.36
+asyncpg==0.30.0
+aiosqlite==0.20.0
+alembic==1.14.0
+
+# --- Authentication ---
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+
+# --- Configuration ---
+pydantic==2.10.4
+pydantic[email]==2.10.4
+pydantic-settings==2.7.0
+
+# --- HTTP client ---
+httpx==0.28.1
+
+# --- Cache / broker ---
+redis==5.2.1
+celery==5.4.0
+
+# --- ML / AI ---
+numpy==1.26.4
+# deepface>=0.0.80          # uncomment for face recognition
+# tensorflow>=2.15.0        # required by deepface
+# torch>=2.1.0              # for gait & age progression models
+# mediapipe>=0.10.9         # for body biometrics
+# open-clip-torch>=2.24.0   # for clothing detection (CLIP)
+# networkx>=3.2             # for route predictor graph
+# xgboost>=2.0.3            # for route scoring model
+# twilio>=9.0.0             # for WhatsApp/SMS alerts
+# boto3>=1.34.0             # for S3 evidence storage
+# Pillow>=10.0.0            # image processing
+
+# --- Testing ---
+pytest==8.3.4
+pytest-asyncio==0.25.2
+pytest-cov==6.0.0
+httpx==0.28.1
+
+# --- Code quality ---
+ruff==0.9.1
