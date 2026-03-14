@@ -12,7 +12,8 @@ from datetime import datetime, timedelta
 
 logger = logging.getLogger(__name__)
 
-LAW_ENFORCEMENT_RETENTION_DAYS = 2557  # 7 years (7 × 365.25 ≈ 2557 days), per DPDP Act 2023
+LAW_ENFORCEMENT_RETENTION_DAYS = 2557  # 7 years (7 × 365.25 ≈ 2557 days) for audit log entries, per DPDP Act 2023
+BIOMETRIC_DATA_RETENTION_DAYS = 30    # 30 days after case closure for biometric/personal data, per DPDP Act 2023
 
 
 class PrivacyAuditLogger:
@@ -96,7 +97,7 @@ class PrivacyAuditLogger:
     def schedule_data_deletion(
         self,
         person_id: str,
-        days: int = 30
+        days: int = BIOMETRIC_DATA_RETENTION_DAYS
     ) -> Dict[str, Any]:
         """
         Schedule automated data deletion after case closure.
