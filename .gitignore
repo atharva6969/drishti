@@ -1,40 +1,26 @@
-# Python
+
+# Python build artifacts
 __pycache__/
-*.py[cod]
-*$py.class
-*.so
-*.egg-info/
-dist/
-build/
-*.egg
-.eggs/
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+**/.pytest_cache/
 
-# Virtual environments
-venv/
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Environment files
 .env
-.venv/
+*.env
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
+# Backend uploads
+backend/uploads/
 
-# Testing
-.pytest_cache/
-.coverage
-htmlcov/
-.tox/
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Node (frontend)
-node_modules/
+# Frontend
+frontend/node_modules/
 frontend/build/
-frontend/dist/
 
-# Logs
-*.log
-.pytest_cache/
