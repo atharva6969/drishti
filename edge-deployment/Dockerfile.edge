@@ -1,0 +1,30 @@
+FROM python:3.11-slim
+
+# Install system dependencies for OpenCV and TFLite
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    libgomp1 \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Install Python dependencies
+RUN pip install --no-cache-dir \
+    tflite-runtime \
+    numpy \
+    opencv-python-headless
+
+# Copy edge inference code
+COPY edge_inference.py .
+COPY tflite_models/ ./tflite_models/
+
+# Create non-root user
+RUN adduser --disabled-password --gecos "" edgeuser
+USER edgeuser
+
+ENV TFLITE_MODEL_DIR=/app/tflite_models
+ENV DRISHTI_API_URL=http://central-api:8000/api/v1
+
+# Default: process camera 0
+CMD ["python", "edge_inference.py", "--camera", "0", "--camera-id", "EDGE-CAM-001"]
