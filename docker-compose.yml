@@ -52,6 +52,11 @@ services:
       TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID:-}
       TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN:-}
       TWILIO_WHATSAPP_NUMBER: ${TWILIO_WHATSAPP_NUMBER:-}
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
     ports:
       - "8000:8000"
     volumes:
@@ -117,3 +122,27 @@ services:
 volumes:
   postgres_data:
   evidence_storage:
+      - ./uploads:/app/uploads
+    environment:
+      - DATABASE_URL=sqlite:///./drishti.db
+      - SECRET_KEY=drishti-secret-key-change-in-production
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000
+      - CHOKIDAR_USEPOLLING=true
+    depends_on:
+      - backend
+    stdin_open: true
+    tty: true
+
+volumes:
+  uploads:
